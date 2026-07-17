@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Web2IPA｜網頁轉未簽名 IPA</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <p class="eyebrow">GitHub Actions Builder</p>
+        <h1>Web2IPA</h1>
+        <p class="lead">把網址或離線網站 ZIP 包成可側載的未簽名 IPA。</p>
+      </div>
+      <span class="badge">Unsigned IPA</span>
+    </header>
+
+    <section class="card notice">
+      <strong>第一次使用：</strong>先 Fork 此專案、啟用 GitHub Actions 與 Pages，再建立只限此倉庫的 Fine-grained Token。Token 只會留在目前瀏覽器的記憶體，不會寫入專案。
+    </section>
+
+    <form id="builder" class="grid">
+      <section class="card span-2">
+        <h2>GitHub 連線</h2>
+        <div class="fields cols-2">
+          <label>GitHub 使用者／組織<input id="owner" required placeholder="your-name" /></label>
+          <label>倉庫名稱<input id="repo" required placeholder="Web2IPA" /></label>
+          <label>分支<input id="branch" value="main" required /></label>
+          <label>Fine-grained Token<input id="token" type="password" required autocomplete="off" placeholder="github_pat_..." /></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>App 資訊</h2>
+        <div class="fields">
+          <label>App 顯示名稱<input id="appName" value="我的網頁 App" required maxlength="30" /></label>
+          <label>IPA 檔名<input id="ipaName" value="MyWebApp" required maxlength="50" /></label>
+          <label>Bundle ID<input id="bundleId" value="com.example.mywebapp" required /></label>
+          <div class="cols-2">
+            <label>版本號<input id="version" value="1.0.0" required /></label>
+            <label>Build<input id="build" type="number" min="1" value="1" required /></label>
+          </div>
+          <label>最低 iOS 版本<input id="minIos" value="15.0" required /></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>網站來源</h2>
+        <div class="segmented">
+          <label><input type="radio" name="sourceMode" value="url" checked /> 線上網址</label>
+          <label><input type="radio" name="sourceMode" value="offline" /> 離線 ZIP</label>
+        </div>
+        <div id="urlBox" class="fields">
+          <label>網站網址<input id="websiteUrl" type="url" value="https://example.com" /></label>
+        </div>
+        <div id="offlineBox" class="fields hidden">
+          <label>網站 ZIP<input id="siteZip" type="file" accept=".zip,application/zip" /></label>
+          <small>ZIP 根目錄必須包含 index.html，建議不超過 20 MB。</small>
+        </div>
+        <label class="check"><input id="allowHttp" type="checkbox" /> 允許 HTTP 非加密網站</label>
+      </section>
+
+      <section class="card">
+        <h2>圖片</h2>
+        <div class="fields">
+          <label>App 圖示<input id="icon" type="file" accept="image/png,image/jpeg,image/webp" required /></label>
+          <small>建議正方形 1024×1024 PNG，系統會自動產生所需尺寸。</small>
+          <label>啟動畫面圖片<input id="splash" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+          <label>啟動畫面背景色<input id="splashColor" type="color" value="#ffffff" /></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>顯示設定</h2>
+        <div class="fields">
+          <label>畫面方向
+            <select id="orientation">
+              <option value="all">自動旋轉</option>
+              <option value="portrait">僅直向</option>
+              <option value="landscape">僅橫向</option>
+            </select>
+          </label>
+          <label>User-Agent 附加文字<input id="userAgent" placeholder="Web2IPA/1.0" /></label>
+          <label class="check"><input id="fullscreen" type="checkbox" /> 隱藏狀態列</label>
+          <label class="check"><input id="backGesture" type="checkbox" checked /> 允許左右滑返回／前進</label>
+          <label class="check"><input id="openExternal" type="checkbox" /> 外部網域改用 Safari 開啟</label>
+          <label class="check"><input id="preventSleep" type="checkbox" /> 防止螢幕自動休眠</label>
+        </div>
+      </section>
+
+      <section class="card span-2">
+        <h2>權限說明文字</h2>
+        <div class="fields cols-2">
+          <label>相機<input id="cameraText" placeholder="此 App 需要使用相機。" /></label>
+          <label>麥克風<input id="microphoneText" placeholder="此 App 需要使用麥克風。" /></label>
+          <label>相簿讀取<input id="photosText" placeholder="此 App 需要讀取照片。" /></label>
+          <label>相簿儲存<input id="photosAddText" placeholder="此 App 需要儲存照片。" /></label>
+          <label>定位<input id="locationText" placeholder="此 App 需要使用你的位置。" /></label>
+        </div>
+      </section>
+
+      <section class="card span-2 actions">
+        <button id="submitBtn" type="submit">上傳設定並開始打包</button>
+        <button id="saveBtn" type="button" class="secondary">儲存目前設定</button>
+        <button id="loadBtn" type="button" class="secondary">載入設定</button>
+        <input id="loadFile" type="file" accept="application/json,.json" hidden />
+        <p id="status">尚未開始</p>
+      </section>
+    </form>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
